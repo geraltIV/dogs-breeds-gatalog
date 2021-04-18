@@ -4,8 +4,8 @@
       <Card
         v-for="item of breedsList"
         :key="item.id"
-        :breed="breedName"
-        :image-url="item"
+        :breed="item.breed"
+        :image-url="item.image"
       />
     </div>
 
@@ -26,6 +26,7 @@ export default {
   data() {
     return {
       loading: true,
+      observer: null
     };
   },
   props: {
@@ -42,11 +43,16 @@ export default {
   },
   mounted() {
     this.loading = false;
-    this.scrollTrigger();
+    this.$nextTick(() => {
+      this.scrollTrigger();
+    })
+  },
+  destroyed () {
+    this.observer.disconnect();
   },
   methods: {
     scrollTrigger() {
-      const observer = new IntersectionObserver((entries) => {
+      this.observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.intersectionRatio > 0) {
             this.$emit("getNewImages");
@@ -54,7 +60,7 @@ export default {
         });
       });
 
-      observer.observe(this.$refs.infinitescrolltrigger);
+      this.observer.observe(this.$refs.infinitescrolltrigger);
     },
   },
 };

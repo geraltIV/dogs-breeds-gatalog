@@ -20,8 +20,13 @@ const routes = [
     component: () => import("../views/Favourites.vue"),
   },
   {
-    path: "*",
+    path: '/error',
+    name: 'PageNotFound',
     component: () => import("../views/PageNotFound.vue"),
+  },
+  {
+    path: "*",
+    redirect: '/error'
   }
 ];
 

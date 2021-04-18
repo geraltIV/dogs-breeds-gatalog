@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <Navigation @sort="sortListOfBreeds('name')" />
-    <CardContainer :breeds-list="getAllBreeds" />
+    <CardContainer :breeds-list="getAllBreeds" @getNewImages="appendMoreImages" />
     <Loader v-show="loading" />
   </div>
 </template>
@@ -20,8 +20,7 @@ export default {
   data() {
     return {
       loading: true,
-      currentSortDir: "asc",
-      modifier: 1
+      isOrdered: false
     };
   },
   async mounted() {
@@ -35,23 +34,21 @@ export default {
     ...mapGetters({
       getAllBreeds: "getAllBreeds",
     }),
+    list () {
+      return this.isOrdered ? this.getAllBreeds : this.$store.state.dogList
+    }
   },
   methods: {
     ...mapActions({
       retrieveRandomBreedsList: "retrieveRandomBreedsList",
+      insertRandomBreedsList: 'insertRandomBreedsList'
     }),
-    sortListOfBreeds(s) {
-      
-      if (s === this.currentSort) {
-        this.currentSortDir = this.currentSortDir === "asc" ? "desc" : "asc";
-      }
-
-      this.currentSort = s;
-
-      this.getAllBreeds.sort((a,b) => {
-        return a - b;
-      });
+    sortBreedsList() {
+      this.isOrdered = !this.isOrdered
     },
+    appendMoreImages() {
+      this.insertRandomBreedsList()
+    }
   },
 };
 </script>

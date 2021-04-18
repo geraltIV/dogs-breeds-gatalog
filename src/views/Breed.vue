@@ -3,9 +3,9 @@
     <Navigation />
 
     <CardContainer
-      :breed-name="this.currentBreedNmae"
-      :breeds-list="getCurrentBreedImages"
-      @getNewImages="scrollTrigger"
+      :breed-name="this.currentBreedName"
+      :breeds-list="getCurrentBreedList"
+      @getNewImages="retrieveNewImages"
     />
 
     <Loader v-show="loading" />
@@ -25,35 +25,36 @@ export default {
   },
   data() {
     return {
-      currentBreedNmae: "",
+      currentBreedName: "",
       loading: true,
       observer: null,
     };
   },
   async mounted() {
-    this.currentBreedNmae = this.$route.path.replace(/\//g, "");
-    await this.retrieveCurrentBreedPhotos(this.currentBreedNmae);
+    this.currentBreedName = this.$route.path.replace(/\//g, "");
+    await this.getAllCurrentBreedImages(this.currentBreedName);
     this.loading = false;
   },
   beforeDestroy() {
-    this.getCurrentBreedImages.length = 0;
+    this.getAllCurrentBreedImages.length = 0;
   },
-//   watch: {
-//     $route (to, from){
-//         this.currentBreedNmae = this.$route.path.replace(/\//g, "");
-//     }
-//   },
+  watch: {
+    $route(to, from) {
+      if(to != from) window.location.reload();
+    }
+  },
   computed: {
     ...mapGetters({
-      getCurrentBreedImages: "getCurrentBreedImages",
+      getAllCurrentBreedImages: "getAllCurrentBreedImages",
+      getCurrentBreedList: 'getCurrentBreedList'
     }),
   },
   methods: {
     ...mapActions({
-      retrieveCurrentBreedPhotos: "retrieveCurrentBreedPhotos",
+      retrieveAllBreedPhotos: 'retrieveAllBreedPhotos'
     }),
-    scrollTrigger() {
-      this.retrieveCurrentBreedPhotos(this.currentBreedNmae);
+    retrieveNewImages() {
+      // this.getAllCurrentBreedImages(this.currentBreedName);
     },
   },
 };

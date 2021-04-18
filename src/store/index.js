@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import endpoint from "../utils/axios";
+// import { pullBreed } from "../utils/parseUrl";
 
 Vue.use(Vuex);
 
@@ -8,28 +9,19 @@ export default new Vuex.Store({
   state: {
     allBreedsList: [],
     allBreeds: [],
-    currentBreedImagesList: [],
+    allCurrentBreedImagesList: [],
     allBreedsWithImages: [],
-    randomImage: ''
+    randomImage: "",
   },
   mutations: {
     ALL_BREEDS_LIST(state, data) {
       state.allBreedsList = data;
     },
     ALL_BREEDS(state, data) {
-      // const listOfAllBreeds = []
-
-      // for (const element in data) {
-      //   if (data[element].length) {
-      //     data[element].forEach(item => {
-      //       listOfAllBreeds.push(`${element}/${item}`)
-      //     })
-      //   } else {
-      //     listOfAllBreeds.push(element)
-      //   }
-      // }
-
       state.allBreeds = data;
+    },
+    INSERT_MORE_PHOTOS(state, data) {
+      state.allBreeds = [...state.allBreeds, ...data];
     },
     BREEDS_WITH_IMAGES(state, data) {
       state.allBreedsWithImages.push(data);
@@ -37,54 +29,90 @@ export default new Vuex.Store({
     RANDOM_IMAGE(state, data) {
       state.randomImage = data;
     },
-    CURRENT_BREED_LIST(state, data) {
-      data.forEach(item => state.currentBreedImagesList.push(item))
-    }
+    ALL_CURRENT_BREED_LIST(state, data) {
+      state.allCurrentBreedImagesList = data;
+    },
   },
   actions: {
-    async retrieveAllBreedsList({commit}) {
-      await endpoint.get('breeds/list')
-        .then(response => {
-          commit('ALL_BREEDS_LIST', response.data.message)
-        })
-        .catch((error) => console.log(error));
-    },
-    async retrieveRandomBreedsList({ commit, dispatch, getters }) {
+    async retrieveAllBreedsList({ commit }) {
       await endpoint
-        .get("breeds/list/random/20")
+        .get("/breeds/list/all")
         .then((response) => {
-          commit("ALL_BREEDS", response.data.message)
-          
-          response.data.message.forEach(item => {
-            dispatch('retrieveRandomBreedsPhoto', item)
-            commit('BREEDS_WITH_IMAGES', {
-              name: item,
-              image: getters.getRandomImage,
-              isFavourite: false
+          commit("ALL_BREEDS_LIST", Object.keys(response.data.message));
+        })
+        .catch((error) => console.log(error));
+    },
+    async retrieveRandomBreedsList({ commit }) {
+      await endpoint
+        .get("/breeds/image/random/20")
+        .then((response) => {
+          commit(
+            "ALL_BREEDS",
+            response.data.message.map((item) => {
+              let pathArr = item.split("/");
+              return {
+                image: item,
+                breed: pathArr[pathArr.length - 2],
+              };
             })
+          );
+        })
+        .catch((error) => {
+          throw error;
+        });
+    },
+    async insertRandomBreedsList({ commit }) {
+      return await endpoint.get("/breeds/image/random/20").then((response) => {
+        commit(
+          "INSERT_MORE_PHOTOS",
+          response.data.message.map((item) => {
+            let pathArr = item.split("/");
+            return {
+              image: item,
+              breed: pathArr[pathArr.length - 2],
+            };
           })
+        );
+      });
+    },
+    async retrieveRandomBreedsPhoto({ commit }, payload = "boxer") {
+      await endpoint
+        .get(`/breed/${payload}/images/random/1`)
+        .then((response) => {
+          commit("RANDOM_IMAGE", response);
         })
         .catch((error) => console.log(error));
     },
-    async retrieveRandomBreedsPhoto({commit}, payload = 'boxer') {
-      await endpoint.get(`/breed/${payload}/images/random/1`)
-        .then(response => {
-          commit('RANDOM_IMAGE', response)
+    async retrieveAllBreedPhotos({ commit }, breedName) {
+      await endpoint
+        .get(`breed/${breedName}/images`)
+        .then((response) => {
+          commit(
+            "ALL_CURRENT_BREED_LIST",
+            response.data.message.map((item) => {
+              let pathArr = item.split("/");
+              return {
+                image: item,
+                breed: pathArr[pathArr.length - 2],
+              };
+            })
+          );
+          return response.data.message;
         })
         .catch((error) => console.log(error));
     },
-    async retrieveCurrentBreedPhotos({commit}, breedName) {
-      await endpoint.get(`breed/${breedName}/images/random/20`)
-        .then(response => {
-          commit('CURRENT_BREED_LIST', response.data.message)
-        })
-        .catch((error) => console.log(error));
-    }
   },
   getters: {
-    getAllBreeds: state => state.allBreeds,
-    getListOfAllBreeds: state => state.allBreedsList,
-    getCurrentBreedImages: state => state.currentBreedImagesList,
-    getRandomImage: state => state.randomImage
+    getAllBreeds: (state) => {
+      return [...state.allBreeds].sort((a, b) => {
+        if (a.breed > b.breed) return 1;
+        if (a.breed < b.breed) return -1;
+        return 0;
+      });
+    },
+    getListOfAllBreeds: (state) => state.allBreedsList,
+    getAllCurrentBreedImages: (state) => state.allCurrentBreedImagesList,
+    getRandomImage: (state) => state.randomImage,
+    getCurrentBreedList: (state) => state.currentBreedImagesList,
   },
 });
