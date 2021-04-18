@@ -1,0 +1,52 @@
+@import "./reset.scss";
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap");
+@import "./mixins.scss";
+@import "./components/loader.scss";
+@import "./components/header.scss";
+@import "./components/navigation.scss";
+@import "./components/breed-list.scss";
+@import './components/card.scss';
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #151419;
+  font-family: "IBM Plex Sans", sans-serif;
+}
+
+p,
+a,
+button {
+  color: #626262;
+}
+
+.container {
+  max-width: 1190px;
+  margin: 0 auto;
+  padding: 0 15px 40px;
+}
+
+.card-container {
+  margin-top: 25px;
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: repeat(3, 1fr);
+
+  &:first-child {
+    grid-column: 1 / -1;
+  }
+}
+
+.button {
+  cursor: pointer;
+  border-color: transparent;
+  outline: none;
+  background: none;
+}
+
+.observer {
+  height: 1px;
+}
