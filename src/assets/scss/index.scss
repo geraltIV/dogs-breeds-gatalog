@@ -54,6 +54,18 @@ button {
 .notification {
   width: 100%;
   margin: 25px 0;
-  color: #626262;
   text-align: center;
+  color: #626262;
+}
+
+@media all and (max-width: 767px) {
+  .card-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media all and (max-width: 574px) {
+  .card-container {
+    grid-template-columns: repeat(1, 1fr);
+  }
 }
