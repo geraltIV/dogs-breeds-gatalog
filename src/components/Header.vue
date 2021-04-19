@@ -5,11 +5,7 @@
         <img src="../assets/img/logo.svg" alt="Pesel logotype" />
       </router-link>
 
-      <router-link
-        to="/favourites"
-        class="header-link"
-        :class="{ 'select-active': this.$route.path === '/favourites' }"
-      >
+      <router-link to="/favourites" class="header-link">
         <span>Избранные пёсели</span>
         <svg
           width="16"

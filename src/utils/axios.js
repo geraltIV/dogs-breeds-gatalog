@@ -1,7 +1,7 @@
-import axios from 'axios'
+import axios from "axios";
 
 const endpoint = axios.create({
-    baseURL: 'https://dog.ceo/api/',
+  baseURL: "https://dog.ceo/api/",
 });
 
-export default endpoint
+export default endpoint;

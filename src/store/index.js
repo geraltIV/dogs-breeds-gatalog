@@ -1,7 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import endpoint from "../utils/axios";
-// import { pullBreed } from "../utils/parseUrl";
 
 Vue.use(Vuex);
 
@@ -9,9 +8,9 @@ export default new Vuex.Store({
   state: {
     allBreedsList: [],
     allBreeds: [],
-    allCurrentBreedImagesList: [],
-    allBreedsWithImages: [],
+    currentBreedImagesList: [],
     randomImage: "",
+    favouritesList: [],
   },
   mutations: {
     ALL_BREEDS_LIST(state, data) {
@@ -23,14 +22,22 @@ export default new Vuex.Store({
     INSERT_MORE_PHOTOS(state, data) {
       state.allBreeds = [...state.allBreeds, ...data];
     },
-    BREEDS_WITH_IMAGES(state, data) {
-      state.allBreedsWithImages.push(data);
-    },
     RANDOM_IMAGE(state, data) {
       state.randomImage = data;
     },
     ALL_CURRENT_BREED_LIST(state, data) {
-      state.allCurrentBreedImagesList = data;
+      state.currentBreedImagesList = data;
+    },
+    INIT_LIKED_BREEDS(state) {
+      if (localStorage.getItem("favourites")) {
+        state.favouritesList = localStorage.getItem("favourites").split(",");
+      }
+    },
+    GET_LIKED_BREEDS(state, data) {
+      if (!state.favouritesList.includes(data)) {
+        state.favouritesList = [...new Set([data, ...state.favouritesList])];
+        localStorage.setItem("favourites", state.favouritesList);
+      }
     },
   },
   actions: {
@@ -76,10 +83,11 @@ export default new Vuex.Store({
       });
     },
     async retrieveRandomBreedsPhoto({ commit }, payload = "boxer") {
-      await endpoint
+      return await endpoint
         .get(`/breed/${payload}/images/random/1`)
         .then((response) => {
           commit("RANDOM_IMAGE", response);
+          return response.data.message;
         })
         .catch((error) => console.log(error));
     },
@@ -97,13 +105,13 @@ export default new Vuex.Store({
               };
             })
           );
-          return response.data.message;
         })
         .catch((error) => console.log(error));
     },
   },
   getters: {
-    getAllBreeds: (state) => {
+    getAllBreeds: (state) => state.allBreeds.sort(() => Math.random() - 0.5),
+    sortedDogList(state) {
       return [...state.allBreeds].sort((a, b) => {
         if (a.breed > b.breed) return 1;
         if (a.breed < b.breed) return -1;
@@ -111,8 +119,8 @@ export default new Vuex.Store({
       });
     },
     getListOfAllBreeds: (state) => state.allBreedsList,
-    getAllCurrentBreedImages: (state) => state.allCurrentBreedImagesList,
     getRandomImage: (state) => state.randomImage,
     getCurrentBreedList: (state) => state.currentBreedImagesList,
+    getFavouritesDogs: (state) => state.favouritesList,
   },
 });

@@ -5,7 +5,7 @@
 @import "./components/header.scss";
 @import "./components/navigation.scss";
 @import "./components/breed-list.scss";
-@import './components/card.scss';
+@import "./components/card.scss";
 
 * {
   margin: 0;
@@ -49,4 +49,11 @@ button {
 
 .observer {
   height: 1px;
+}
+
+.notification {
+  width: 100%;
+  margin: 25px 0;
+  color: #626262;
+  text-align: center;
 }

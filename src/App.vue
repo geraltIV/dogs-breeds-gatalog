@@ -9,15 +9,18 @@
 </template>
 
 <script>
-import Header from './components/Header'
+import Header from "./components/Header";
 export default {
-  name: 'App',
+  name: "App",
   components: {
     Header,
   },
-}
+  beforeCreate() {
+    this.$store.commit("INIT_LIKED_BREEDS");
+  },
+};
 </script>
 
-<style>
-
+<style lang="scss">
+@import "./assets/scss/index.scss";
 </style>

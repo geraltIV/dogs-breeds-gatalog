@@ -1,10 +1,10 @@
 <template>
   <div>
-    <Navigation />
+    <Navigation :current-breed="currentBreedName" />
 
     <CardContainer
       :breed-name="this.currentBreedName"
-      :breeds-list="getCurrentBreedList"
+      :breeds-list="getCurrentBreedList.slice(0, loadlimit)"
       @getNewImages="retrieveNewImages"
     />
 
@@ -28,33 +28,35 @@ export default {
       currentBreedName: "",
       loading: true,
       observer: null,
+      loadlimit: 20,
     };
   },
   async mounted() {
     this.currentBreedName = this.$route.path.replace(/\//g, "");
-    await this.getAllCurrentBreedImages(this.currentBreedName);
+    await this.retrieveAllBreedPhotos(this.currentBreedName);
     this.loading = false;
   },
   beforeDestroy() {
-    this.getAllCurrentBreedImages.length = 0;
+    this.getCurrentBreedList.length = 0;
   },
   watch: {
     $route(to, from) {
-      if(to != from) window.location.reload();
-    }
+      if (to != from) window.location.reload();
+    },
   },
   computed: {
     ...mapGetters({
-      getAllCurrentBreedImages: "getAllCurrentBreedImages",
-      getCurrentBreedList: 'getCurrentBreedList'
+      getCurrentBreedList: "getCurrentBreedList",
     }),
   },
   methods: {
     ...mapActions({
-      retrieveAllBreedPhotos: 'retrieveAllBreedPhotos'
+      retrieveAllBreedPhotos: "retrieveAllBreedPhotos",
     }),
     retrieveNewImages() {
-      // this.getAllCurrentBreedImages(this.currentBreedName);
+      this.loading = true;
+      this.loadlimit += 20;
+      this.loading = false;
     },
   },
 };

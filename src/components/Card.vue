@@ -7,8 +7,8 @@
   >
     <button
       class="button select-button"
-      @click="addToFavourites(breed, imageUrl)"
-      :disabled="isDisabled"
+      @click="addToFavourites(imageUrl)"
+      :disabled="isFavourite"
     >
       <svg
         v-if="isFavourite"
@@ -45,6 +45,7 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from "vuex";
 export default {
   name: "Card",
   data() {
@@ -62,7 +63,28 @@ export default {
       type: String,
       default: "",
     },
-  }
+  },
+  mounted() {
+    this.isFavouritesImage();
+  },
+  computed: {
+    ...mapGetters({
+      getFavouritesDogs: "getFavouritesDogs",
+    }),
+  },
+  methods: {
+    ...mapActions({
+      addItemToFavourite: "addItemToFavourite",
+    }),
+    addToFavourites(image) {
+      this.isFavourite = true;
+      this.$store.commit("GET_LIKED_BREEDS", image);
+    },
+    isFavouritesImage() {
+      if (this.getFavouritesDogs.indexOf(this.$props.imageUrl) != -1)
+        this.isFavourite = true;
+    },
+  },
 };
 </script>
 

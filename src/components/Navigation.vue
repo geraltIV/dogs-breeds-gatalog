@@ -22,7 +22,7 @@
           </svg>
         </button>
         <button
-          class="button all-breeds"
+          class="button all-breeds-button"
           v-if="currentBreed"
           @click="goToHomePage"
         >
@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions } from "vuex";
 import BreedList from "./BreedList";
 
 export default {
@@ -76,20 +76,20 @@ export default {
   props: {
     currentBreed: {
       type: String,
-      default: ''
+      default: "",
     },
   },
-  mounted () {
-    this.retrieveAllBreedsList()
+  mounted() {
+    this.retrieveAllBreedsList();
   },
   computed: {
     ...mapGetters({
-      getListOfAllBreeds: 'getListOfAllBreeds'
-    })
+      getListOfAllBreeds: "getListOfAllBreeds",
+    }),
   },
   methods: {
     ...mapActions({
-      retrieveAllBreedsList: 'retrieveAllBreedsList'
+      retrieveAllBreedsList: "retrieveAllBreedsList",
     }),
     showBreedsList() {
       this.showList = !this.showList;

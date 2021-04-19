@@ -22,6 +22,21 @@
     }
   }
 
+  .all-breeds-button {
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.01em;
+    color: #3c59f0;
+    border: 1px solid #3c59f0 !important;
+    border-radius: 20px;
+    padding: 4px 12px;
+    text-transform: capitalize;
+
+    span {
+      margin: 0 8px 0 0;
+    }
+  }
+
   .sort-button {
     @include df-space-between;
     text-align: right;

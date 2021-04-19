@@ -1,7 +1,10 @@
 <template>
   <div class="home">
-    <Navigation @sort="sortListOfBreeds('name')" />
-    <CardContainer :breeds-list="getAllBreeds" @getNewImages="appendMoreImages" />
+    <Navigation @sort="sortBreedsList" />
+    <CardContainer
+      :breeds-list="getBreedsList"
+      @getNewImages="appendMoreImages"
+    />
     <Loader v-show="loading" />
   </div>
 </template>
@@ -20,7 +23,8 @@ export default {
   data() {
     return {
       loading: true,
-      isOrdered: false
+      isOrdered: false,
+      currentSortDir: "asc",
     };
   },
   async mounted() {
@@ -33,22 +37,23 @@ export default {
   computed: {
     ...mapGetters({
       getAllBreeds: "getAllBreeds",
+      sortedDogList: "sortedDogList",
     }),
-    list () {
-      return this.isOrdered ? this.getAllBreeds : this.$store.state.dogList
-    }
+    getBreedsList() {
+      return this.isOrdered ? this.sortedDogList : this.$store.state.allBreeds;
+    },
   },
   methods: {
     ...mapActions({
       retrieveRandomBreedsList: "retrieveRandomBreedsList",
-      insertRandomBreedsList: 'insertRandomBreedsList'
+      insertRandomBreedsList: "insertRandomBreedsList",
     }),
-    sortBreedsList() {
-      this.isOrdered = !this.isOrdered
-    },
     appendMoreImages() {
-      this.insertRandomBreedsList()
-    }
+      this.insertRandomBreedsList();
+    },
+    sortBreedsList() {
+      this.isOrdered = !this.isOrdered;
+    },
   },
 };
 </script>

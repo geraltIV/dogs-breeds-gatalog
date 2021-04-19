@@ -1,5 +1,9 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+import Home from "../views/Home.vue";
+import Breed from "../views/Breed.vue";
+import Favourites from "../views/Favourites.vue";
+import PageNotFound from "../views/PageNotFound.vue";
 
 Vue.use(VueRouter);
 
@@ -7,32 +11,31 @@ const routes = [
   {
     path: "/",
     name: "Home",
-    component: () => import("../views/Home.vue"),
+    component: Home,
+  },
+  {
+    path: "/favourites",
+    name: "Favourites",
+    component: Favourites,
   },
   {
     path: "/:breed",
     name: "Breed",
-    component: () => import("../views/Breed.vue"),
+    component: Breed,
   },
   {
-    path: '/favourites',
-    name: 'Favourites',
-    component: () => import("../views/Favourites.vue"),
-  },
-  {
-    path: '/error',
-    name: 'PageNotFound',
-    component: () => import("../views/PageNotFound.vue"),
+    path: "/error",
+    name: "PageNotFound",
+    component: PageNotFound,
   },
   {
     path: "*",
-    redirect: '/error'
-  }
+    redirect: "/error",
+  },
 ];
 
 const router = new VueRouter({
   mode: "history",
-  base: process.env.BASE_URL,
   routes,
 });
 
